@@ -41,6 +41,8 @@ export default function Home() {
 
       {/* Main Card */}
       <motion.div
+
+
         className={`z-10 max-w-md w-full ${
           darkMode ? "bg-gray-900/70 border-gray-700" : "bg-white/70 border-gray-200"
         } backdrop-blur-2xl border rounded-3xl shadow-2xl p-8`}
@@ -48,6 +50,19 @@ export default function Home() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, ease: "easeOut" }}
       >
+      {/* Navigation bar */}
+<nav className="flex justify-end mb-4">
+  <a
+    href="/about"
+    className={`text-sm font-medium px-4 py-2 rounded-full transition-all duration-300 ${
+      darkMode
+        ? "text-gray-300 hover:text-white hover:bg-gray-800"
+        : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+    }`}
+  >
+    About
+  </a>
+</nav>
         {/* Ad Placeholder */}
         <div
           className={`w-full h-16 rounded-xl mb-6 flex items-center justify-center text-sm font-medium transition-all ${
