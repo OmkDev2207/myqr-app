@@ -1,217 +1,250 @@
 "use client";
 
-import React, { useState, useRef } from "react";
-import { QRCodeCanvas } from "qrcode.react";
+import { useState } from "react";
+import QRCode from "react-qr-code";
+import { Moon, Sun, Link2 } from "lucide-react";
 import { motion } from "framer-motion";
-import { Download, Link as LinkIcon, Sun, Moon } from "lucide-react";
+import Link from "next/link";
 
 export default function Home() {
-  const [url, setUrl] = useState<string>("");
-  const [darkMode, setDarkMode] = useState<boolean>(false);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [input, setInput] = useState("");
+  const [qrValue, setQrValue] = useState("");
+  const [darkMode, setDarkMode] = useState(false);
 
-  const handleDownload = () => {
-    const canvas = document.querySelector("canvas");
-    if (!canvas) return;
-    const a = document.createElement("a");
-    a.href = (canvas as HTMLCanvasElement).toDataURL("image/png");
-    a.download = "myqr-code.png";
-    a.click();
+  const handleGenerate = () => {
+    const trimmed = input.trim();
+    if (!trimmed) {
+      setQrValue("");
+      return;
+    }
+    setQrValue(trimmed);
+  };
+
+  const downloadQR = () => {
+    if (!qrValue) return;
+    const svg = document.getElementById("qrlabz-qr") as SVGSVGElement | null;
+    if (!svg) return;
+
+    const serializer = new XMLSerializer();
+    const svgString = serializer.serializeToString(svg);
+
+    const canvas = document.createElement("canvas");
+    const size = 512;
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const img = new Image();
+    const svgBlob = new Blob([svgString], {
+      type: "image/svg+xml;charset=utf-8",
+    });
+    const url = URL.createObjectURL(svgBlob);
+
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0, size, size);
+      URL.revokeObjectURL(url);
+      const pngUrl = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.href = pngUrl;
+      link.download = "qrlabz-qr.png";
+      link.click();
+    };
+
+    img.src = url;
   };
 
   return (
     <main
-      className={`min-h-screen flex flex-col items-center justify-center transition-all duration-500 ${
+      className={`min-h-screen px-4 py-6 transition-colors duration-500 ${
         darkMode
-          ? "bg-gradient-to-br from-gray-900 via-gray-800 to-black text-gray-100"
-          : "bg-gradient-to-br from-indigo-100 via-white to-blue-100 text-gray-900"
-      } p-4 relative overflow-hidden`}
+          ? "bg-gradient-to-br from-slate-950 via-slate-900 to-black text-slate-50"
+          : "bg-gradient-to-br from-indigo-900 via-slate-900 to-fuchsia-800 text-slate-50"
+      }`}
     >
-      {/* Gradient glows */}
-      <div
-        className={`absolute top-[-10rem] left-[-10rem] w-[22rem] h-[22rem] rounded-full blur-3xl opacity-25 transition-all duration-700 ${
-          darkMode ? "bg-indigo-700" : "bg-indigo-300"
-        }`}
-      ></div>
-      <div
-        className={`absolute bottom-[-10rem] right-[-10rem] w-[20rem] h-[20rem] rounded-full blur-3xl opacity-25 transition-all duration-700 ${
-          darkMode ? "bg-blue-700" : "bg-blue-200"
-        }`}
-      ></div>
-
-      {/* Main Card */}
-      <motion.div
-
-
-        className={`z-10 max-w-md w-full ${
-          darkMode ? "bg-gray-900/70 border-gray-700" : "bg-white/70 border-gray-200"
-        } backdrop-blur-2xl border rounded-3xl shadow-2xl p-8`}
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, ease: "easeOut" }}
-      >
-      {/* Navigation bar */}
-<nav className="flex justify-end mb-4">
-  <a
-    href="/about"
-    className={`text-sm font-medium px-4 py-2 rounded-full transition-all duration-300 ${
-      darkMode
-        ? "text-gray-300 hover:text-white hover:bg-gray-800"
-        : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
-    }`}
-  >
-    About
-  </a>
-</nav>
-        {/* Ad Placeholder */}
-        <div
-          className={`w-full h-16 rounded-xl mb-6 flex items-center justify-center text-sm font-medium transition-all ${
-            darkMode
-              ? "bg-gray-800/80 text-gray-400 border border-gray-700"
-              : "bg-gray-200/60 text-gray-600 border border-gray-300"
-          }`}
+      {/* NAVBAR */}
+      <nav className="w-full max-w-6xl mx-auto flex justify-between items-center mb-8">
+        <Link
+          href="/"
+          className="text-lg sm:text-xl font-extrabold tracking-tight bg-gradient-to-r from-cyan-300 via-sky-400 to-fuchsia-400 bg-clip-text text-transparent"
         >
-          Google Ad Placeholder
+          QRLabz
+        </Link>
+
+        <button
+          onClick={() => setDarkMode(!darkMode)}
+          className="p-2 rounded-full border border-slate-600 bg-slate-900/60 hover:bg-slate-800 transition-all"
+          aria-label="Toggle theme"
+        >
+          {darkMode ? <Sun size={18} /> : <Moon size={18} />}
+        </button>
+      </nav>
+
+      {/* MAIN LAYOUT: LEFT AD – CARD – RIGHT AD */}
+      <div className="w-full max-w-6xl mx-auto flex justify-center mt-4">
+        {/* LEFT AD (desktop only) */}
+        <div className="hidden lg:flex mr-6">
+          <div className="w-[300px] h-[600px] bg-slate-900/60 border border-slate-700 rounded-2xl flex items-center justify-center text-xs text-slate-300">
+            Ad Placeholder
+          </div>
         </div>
 
-        {/* Header */}
-        <div className="flex justify-between items-center mb-4">
-          <motion.h1
-            className={`text-4xl font-extrabold tracking-tight ${
-              darkMode ? "text-white" : "text-gray-800"
-            }`}
-            initial={{ opacity: 0, y: -10 }}
+        {/* CENTER COLUMN (CARD + SEO) */}
+        <div className="flex flex-col items-center flex-1 max-w-xl">
+          {/* CARD */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="w-full rounded-3xl border border-slate-700 bg-slate-900/70 backdrop-blur-xl shadow-2xl p-6 sm:p-8"
           >
-            My<span className="text-indigo-500">QR</span>
-          </motion.h1>
-
-          {/* Light/Dark Mode Toggle */}
-          <button
-            onClick={() => setDarkMode(!darkMode)}
-            className={`p-2 rounded-full border transition-all ${
-              darkMode
-                ? "bg-gray-800 hover:bg-gray-700 border-gray-600"
-                : "bg-gray-100 hover:bg-gray-200 border-gray-300"
-            }`}
-          >
-            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-          </button>
-        </div>
-
-        <p className="text-sm opacity-80 text-center mb-8">
-          Generate instant QR codes — fast, clean, and elegant.
-        </p>
-
-        {/* Input Field */}
-        <label className="block mb-2 text-sm font-medium opacity-90">
-          Enter URL or text:
-        </label>
-        <div className="flex items-center gap-2 mb-6">
-          <LinkIcon className="opacity-70" size={18} />
-          <input
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            placeholder="https://example.com"
-            className={`flex-1 rounded-lg border p-2 focus:ring-2 transition-all ${
-              darkMode
-                ? "bg-gray-800 border-gray-600 focus:ring-indigo-600 text-white placeholder-gray-400"
-                : "bg-white border-gray-300 focus:ring-indigo-400"
-            }`}
-          />
-        </div>
-
-        {/* QR Code */}
-        {url ? (
-          <motion.div
-            className="flex flex-col items-center mt-4"
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div
-              className={`p-4 rounded-2xl border shadow-lg transition-all duration-500 ${
-                darkMode
-                  ? "bg-gray-800 border-gray-700"
-                  : "bg-white border-gray-200"
-              }`}
-            >
-              <QRCodeCanvas
-                value={url}
-                size={250}
-                fgColor={darkMode ? "#ffffff" : "#000000"}
-                bgColor={darkMode ? "#111111" : "#ffffff"}
-                level={"M"}
-                includeMargin={true}
-                ref={canvasRef}
-              />
+            {/* Top row: About link */}
+            <div className="flex items-center justify-between mb-3">
+              <Link
+                href="/about"
+                className="text-xs sm:text-sm text-slate-300 hover:text-white underline-offset-2 hover:underline"
+              >
+                About
+              </Link>
             </div>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleDownload}
-              className={`mt-6 flex items-center gap-2 px-5 py-2 rounded-lg shadow transition-all duration-300 ${
-                darkMode
-                  ? "bg-indigo-600 text-white hover:bg-indigo-700"
-                  : "bg-indigo-600 text-white hover:bg-indigo-700"
-              }`}
+
+            {/* Heading */}
+            <div className="text-center mb-6">
+              <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
+                Instant QR Codes
+              </h1>
+              <p className="mt-2 text-xs sm:text-sm text-slate-300">
+                Paste any URL or text below and generate a clean, scannable QR
+                code in one click.
+              </p>
+            </div>
+
+            {/* INPUT */}
+            <div className="mb-4">
+              <label className="block mb-1 text-xs text-slate-300">
+                Enter URL or text:
+              </label>
+              <div className="flex items-center gap-2 px-3 py-2 rounded-2xl bg-slate-900 border border-slate-700">
+                <Link2 size={16} className="text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="https://example.com"
+                  value={input}
+                  onChange={(e) => {
+  setInput(e.target.value);
+  setQrValue("");   // Clear old QR when typing
+}}
+
+                  className="w-full bg-transparent outline-none text-sm placeholder:text-slate-500"
+                />
+              </div>
+            </div>
+
+            {/* GENERATE BUTTON */}
+            <button
+              onClick={handleGenerate}
+              disabled={!input.trim()}
+              className="w-full py-2.5 rounded-2xl text-sm font-semibold bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-400 hover:to-indigo-400 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-lg shadow-sky-500/30"
             >
-              <Download size={18} />
-              Download QR
-            </motion.button>
+              Generate QR Code
+            </button>
+
+            {/* QR PREVIEW */}
+            <div className="mt-6 flex flex-col items-center">
+              {qrValue ? (
+                <>
+                  <div className="p-3 rounded-2xl bg-slate-900 shadow-xl">
+                    <QRCode
+                      id="qrlabz-qr"
+                      value={qrValue}
+                      size={192}
+                      bgColor={darkMode ? "#020617" : "#0f172a"}
+                      fgColor={darkMode ? "#e5e7eb" : "#e5e7eb"}
+                      style={{ height: "192px", width: "192px" }}
+                    />
+                  </div>
+                  <button
+                    onClick={downloadQR}
+                    className="mt-4 px-4 py-2 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-sm font-medium text-slate-900 shadow-md transition-all"
+                  >
+                    Download QR as PNG
+                  </button>
+                  <p className="mt-2 text-xs text-slate-300">
+                    Works with any modern smartphone camera.
+                  </p>
+                </>
+              ) : (
+                <p className="text-xs text-slate-400 text-center">
+                  Enter a link or text above and click{" "}
+                  <span className="font-semibold">Generate QR Code</span> to see
+                  your QR here.
+                </p>
+              )}
+            </div>
           </motion.div>
-        ) : (
-          <motion.div
-            className="text-center text-gray-500 mt-6"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            Enter a link to generate your QR code
-          </motion.div>
-        )}
-      </motion.div>
-        <section className="mt-16 max-w-3xl mx-auto text-gray-700 dark:text-gray-300 leading-relaxed px-4">
-  <h2 className="text-2xl font-semibold mb-3">What is a QR Code?</h2>
-  <p className="mb-4">
-    A QR code (Quick Response code) is a two-dimensional barcode that can store
-    URLs, text, WiFi credentials, payment links, and more. They can be scanned
-    instantly with any smartphone camera.
-  </p>
 
-  <h2 className="text-2xl font-semibold mb-3">Why Use QRLabz?</h2>
-  <p className="mb-4">
-    QRLabz provides fast, clean, and minimal QR code generation with an easy
-    interface and dark/light theme support. No login, no data collection, and
-    no unnecessary steps.
-  </p>
+          {/* SEO / INFO SECTION */}
+          <section className="mt-10 w-full text-sm leading-relaxed text-slate-100/90">
+            <h2 className="text-xl font-semibold mb-2">What is a QR Code?</h2>
+            <p className="mb-4">
+              A QR code (Quick Response code) is a two-dimensional barcode that
+              can store URLs, text, WiFi credentials, payment links, and more.
+              It can be scanned instantly using any smartphone camera, making it
+              perfect for quick sharing.
+            </p>
 
-  <h2 className="text-2xl font-semibold mb-3">How to Create a QR Code</h2>
-  <p className="mb-4">
-    1. Enter your URL or text above.<br />
-    2. Switch between dark or light theme.<br />
-    3. Click <strong>Generate</strong>.<br />
-    4. Download your high-quality QR code instantly.
-  </p>
+            <h2 className="text-xl font-semibold mb-2">Why Use QRLabz?</h2>
+            <p className="mb-4">
+              QRLabz focuses on speed, clarity, and a distraction-free
+              experience. There&apos;s no signup, no complex settings, and no
+              data collection — just a simple tool to generate high-quality QR
+              codes in seconds.
+            </p>
 
-  <h2 className="text-2xl font-semibold mb-3">Features</h2>
-  <ul className="list-disc ml-6">
-    <li>Instant QR generation</li>
-    <li>Clean and minimal design</li>
-    <li>Dark & light themes</li>
-    <li>High-quality PNG download</li>
-    <li>No signup required — 100% free</li>
-  </ul>
-</section>
+            <h2 className="text-xl font-semibold mb-2">How to Create a QR Code</h2>
+            <ol className="list-decimal ml-5 space-y-1 mb-4">
+              <li>Enter your URL or text in the input box above.</li>
+              <li>Click the <strong>Generate QR Code</strong> button.</li>
+              <li>Your QR code appears instantly.</li>
+              <li>Download it as a PNG and use it anywhere.</li>
+            </ol>
 
-      <footer className="mt-12 mb-8 text-center text-sm text-gray-600 dark:text-gray-400">
-  <div className="space-x-4">
-    <a href="/about" className="hover:underline">About</a>
-    <a href="/privacy" className="hover:underline">Privacy Policy</a>
-    <a href="/terms" className="hover:underline">Terms of Service</a>
-  </div>
-</footer>
+            <h2 className="text-xl font-semibold mb-2">Features</h2>
+            <ul className="list-disc ml-5 space-y-1 mb-2">
+              <li>Instant QR creation</li>
+              <li>High-quality scannable output</li>
+              <li>Neon gradient UI with dark mode</li>
+              <li>No login, no tracking</li>
+              <li>Completely free to use</li>
+            </ul>
+          </section>
 
+          {/* FOOTER */}
+          <footer className="mt-10 mb-6 text-center text-xs text-slate-300">
+            <div className="space-x-4">
+              <Link href="/about" className="hover:underline">
+                About
+              </Link>
+              <Link href="/privacy" className="hover:underline">
+                Privacy Policy
+              </Link>
+              <Link href="/terms" className="hover:underline">
+                Terms of Service
+              </Link>
+            </div>
+            <p className="mt-2">
+              © {new Date().getFullYear()} QRLabz. All rights reserved.
+            </p>
+          </footer>
+        </div>
+
+        {/* RIGHT AD (desktop only) */}
+        <div className="hidden lg:flex ml-6">
+          <div className="w-[300px] h-[600px] bg-slate-900/60 border border-slate-700 rounded-2xl flex items-center justify-center text-xs text-slate-300">
+            Ad Placeholder
+          </div>
+        </div>
+      </div>
     </main>
   );
 }
