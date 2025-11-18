@@ -171,6 +171,47 @@ export default function Home() {
           </motion.div>
         )}
       </motion.div>
+        <section className="mt-16 max-w-3xl mx-auto text-gray-700 dark:text-gray-300 leading-relaxed px-4">
+  <h2 className="text-2xl font-semibold mb-3">What is a QR Code?</h2>
+  <p className="mb-4">
+    A QR code (Quick Response code) is a two-dimensional barcode that can store
+    URLs, text, WiFi credentials, payment links, and more. They can be scanned
+    instantly with any smartphone camera.
+  </p>
+
+  <h2 className="text-2xl font-semibold mb-3">Why Use QRLabz?</h2>
+  <p className="mb-4">
+    QRLabz provides fast, clean, and minimal QR code generation with an easy
+    interface and dark/light theme support. No login, no data collection, and
+    no unnecessary steps.
+  </p>
+
+  <h2 className="text-2xl font-semibold mb-3">How to Create a QR Code</h2>
+  <p className="mb-4">
+    1. Enter your URL or text above.<br />
+    2. Switch between dark or light theme.<br />
+    3. Click <strong>Generate</strong>.<br />
+    4. Download your high-quality QR code instantly.
+  </p>
+
+  <h2 className="text-2xl font-semibold mb-3">Features</h2>
+  <ul className="list-disc ml-6">
+    <li>Instant QR generation</li>
+    <li>Clean and minimal design</li>
+    <li>Dark & light themes</li>
+    <li>High-quality PNG download</li>
+    <li>No signup required — 100% free</li>
+  </ul>
+</section>
+
+      <footer className="mt-12 mb-8 text-center text-sm text-gray-600 dark:text-gray-400">
+  <div className="space-x-4">
+    <a href="/about" className="hover:underline">About</a>
+    <a href="/privacy" className="hover:underline">Privacy Policy</a>
+    <a href="/terms" className="hover:underline">Terms of Service</a>
+  </div>
+</footer>
+
     </main>
   );
 }
