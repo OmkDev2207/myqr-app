@@ -25,13 +25,20 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* ✅ Google AdSense Verification Code */}
+        {/* ✅ Google AdSense Script */}
         <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7662746918059885"
           crossOrigin="anonymous"
         ></script>
+
+        {/* ✅ Google Search Console Verification */}
+        <meta
+          name="google-site-verification"
+          content="0kNEQ3B5yVJiyPVlYEvVmge-m-wt6P76nh3yFhmu_64"
+        />
       </head>
+
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
