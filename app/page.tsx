@@ -22,6 +22,7 @@ export default function Home() {
 
   const downloadQR = () => {
     if (!qrValue) return;
+
     const svg = document.getElementById("qrlabz-qr") as SVGSVGElement | null;
     if (!svg) return;
 
@@ -36,9 +37,7 @@ export default function Home() {
     if (!ctx) return;
 
     const img = new Image();
-    const svgBlob = new Blob([svgString], {
-      type: "image/svg+xml;charset=utf-8",
-    });
+    const svgBlob = new Blob([svgString], { type: "image/svg+xml" });
     const url = URL.createObjectURL(svgBlob);
 
     img.onload = () => {
@@ -63,7 +62,7 @@ export default function Home() {
       }`}
     >
       {/* NAVBAR */}
-      <nav className="w-full max-w-6xl mx-auto flex justify-between items-center mb-8">
+      <nav className="w-full max-w-6xl mx-auto flex justify-between items-center mb-4">
         <Link
           href="/"
           className="text-lg sm:text-xl font-extrabold tracking-tight bg-gradient-to-r from-cyan-300 via-sky-400 to-fuchsia-400 bg-clip-text text-transparent"
@@ -80,8 +79,15 @@ export default function Home() {
         </button>
       </nav>
 
-      {/* MAIN LAYOUT: LEFT AD – CARD – RIGHT AD */}
-      <div className="w-full max-w-6xl mx-auto flex justify-center mt-4">
+      {/* MOBILE TOP AD */}
+      <div className="lg:hidden w-full max-w-6xl mx-auto mb-4">
+        <div className="w-full h-20 bg-slate-900/60 border border-slate-700 rounded-xl flex items-center justify-center text-xs text-slate-300">
+          Ad Placeholder
+        </div>
+      </div>
+
+      {/* MAIN LAYOUT */}
+      <div className="w-full max-w-6xl mx-auto flex justify-center mt-2">
         {/* LEFT AD (desktop only) */}
         <div className="hidden lg:flex mr-6">
           <div className="w-[300px] h-[600px] bg-slate-900/60 border border-slate-700 rounded-2xl flex items-center justify-center text-xs text-slate-300">
@@ -89,7 +95,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* CENTER COLUMN (CARD + SEO) */}
+        {/* CENTER COLUMN */}
         <div className="flex flex-col items-center flex-1 max-w-xl">
           {/* CARD */}
           <motion.div
@@ -98,7 +104,6 @@ export default function Home() {
             transition={{ duration: 0.6, ease: "easeOut" }}
             className="w-full rounded-3xl border border-slate-700 bg-slate-900/70 backdrop-blur-xl shadow-2xl p-6 sm:p-8"
           >
-            {/* Top row: About link */}
             <div className="flex items-center justify-between mb-3">
               <Link
                 href="/about"
@@ -108,7 +113,6 @@ export default function Home() {
               </Link>
             </div>
 
-            {/* Heading */}
             <div className="text-center mb-6">
               <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
                 Instant QR Codes
@@ -119,22 +123,22 @@ export default function Home() {
               </p>
             </div>
 
-            {/* INPUT */}
+            {/* INPUT FIELD */}
             <div className="mb-4">
               <label className="block mb-1 text-xs text-slate-300">
                 Enter URL or text:
               </label>
               <div className="flex items-center gap-2 px-3 py-2 rounded-2xl bg-slate-900 border border-slate-700">
                 <Link2 size={16} className="text-slate-400" />
+
                 <input
                   type="text"
                   placeholder="https://example.com"
                   value={input}
                   onChange={(e) => {
-  setInput(e.target.value);
-  setQrValue("");   // Clear old QR when typing
-}}
-
+                    setInput(e.target.value);
+                    setQrValue(""); // clears QR on typing
+                  }}
                   className="w-full bg-transparent outline-none text-sm placeholder:text-slate-500"
                 />
               </div>
@@ -159,16 +163,17 @@ export default function Home() {
                       value={qrValue}
                       size={192}
                       bgColor={darkMode ? "#020617" : "#0f172a"}
-                      fgColor={darkMode ? "#e5e7eb" : "#e5e7eb"}
-                      style={{ height: "192px", width: "192px" }}
+                      fgColor="#e5e7eb"
                     />
                   </div>
+
                   <button
                     onClick={downloadQR}
                     className="mt-4 px-4 py-2 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-sm font-medium text-slate-900 shadow-md transition-all"
                   >
                     Download QR as PNG
                   </button>
+
                   <p className="mt-2 text-xs text-slate-300">
                     Works with any modern smartphone camera.
                   </p>
@@ -183,44 +188,46 @@ export default function Home() {
             </div>
           </motion.div>
 
-          {/* SEO / INFO SECTION */}
-          <section className="mt-10 w-full text-sm leading-relaxed text-slate-100/90">
+          {/* MOBILE MIDDLE AD */}
+          <div className="lg:hidden w-full my-6">
+            <div className="w-full h-20 bg-slate-900/60 border border-slate-700 rounded-xl flex items-center justify-center text-xs text-slate-300">
+              Ad Placeholder
+            </div>
+          </div>
+
+          {/* SEO SECTION */}
+          <section className="mt-6 w-full text-sm leading-relaxed text-slate-100/90">
             <h2 className="text-xl font-semibold mb-2">What is a QR Code?</h2>
             <p className="mb-4">
               A QR code (Quick Response code) is a two-dimensional barcode that
-              can store URLs, text, WiFi credentials, payment links, and more.
-              It can be scanned instantly using any smartphone camera, making it
-              perfect for quick sharing.
+              stores URLs, text, WiFi credentials, payment links, and more.
+              It can be scanned with any smartphone camera.
             </p>
 
             <h2 className="text-xl font-semibold mb-2">Why Use QRLabz?</h2>
             <p className="mb-4">
-              QRLabz focuses on speed, clarity, and a distraction-free
-              experience. There&apos;s no signup, no complex settings, and no
-              data collection — just a simple tool to generate high-quality QR
-              codes in seconds.
+              QRLabz is designed to be fast, simple, and privacy-friendly.
+              No login, no tracking — just instant QR code generation.
             </p>
 
             <h2 className="text-xl font-semibold mb-2">How to Create a QR Code</h2>
             <ol className="list-decimal ml-5 space-y-1 mb-4">
-              <li>Enter your URL or text in the input box above.</li>
-              <li>Click the <strong>Generate QR Code</strong> button.</li>
-              <li>Your QR code appears instantly.</li>
-              <li>Download it as a PNG and use it anywhere.</li>
+              <li>Enter your URL or text.</li>
+              <li>Click <strong>Generate QR Code</strong>.</li>
+              <li>Your QR appears instantly.</li>
+              <li>Download your QR as a PNG.</li>
             </ol>
-
-            <h2 className="text-xl font-semibold mb-2">Features</h2>
-            <ul className="list-disc ml-5 space-y-1 mb-2">
-              <li>Instant QR creation</li>
-              <li>High-quality scannable output</li>
-              <li>Neon gradient UI with dark mode</li>
-              <li>No login, no tracking</li>
-              <li>Completely free to use</li>
-            </ul>
           </section>
 
+          {/* MOBILE FOOTER AD */}
+          <div className="lg:hidden w-full mt-10 mb-4">
+            <div className="w-full h-20 bg-slate-900/60 border border-slate-700 rounded-xl flex items-center justify-center text-xs text-slate-300">
+              Ad Placeholder
+            </div>
+          </div>
+
           {/* FOOTER */}
-          <footer className="mt-10 mb-6 text-center text-xs text-slate-300">
+          <footer className="mt-6 mb-6 text-center text-xs text-slate-300">
             <div className="space-x-4">
               <Link href="/about" className="hover:underline">
                 About
@@ -232,6 +239,7 @@ export default function Home() {
                 Terms of Service
               </Link>
             </div>
+
             <p className="mt-2">
               © {new Date().getFullYear()} QRLabz. All rights reserved.
             </p>
